@@ -92,7 +92,6 @@ function QPromise(fn) {
         handlers.push(handler);
       } else {
         if (state === FULFILLED) {
-          // handler.onFulfilled(value);
           handler.onFulfilled(value);
         }
         if (state === REJECTED) {
