@@ -9,21 +9,19 @@ function QPromise(fn) {
   // store value once FULFILLED or REJECTED
   var value = null;
 
-  // store sucess & failure handlers
+  // store success & failure handlers
   var handlers = [];
 
   function fulfill(result) {
     state = FULFILLED;
     value = result;
     handlers.forEach(handle); // 执行所有的 onFulfilled() passed in
-    handlers = null;
   }
 
   function reject(error) {
     state = REJECTED;
     value = error;
     handlers.forEach(handle); // 执行所有的 onRejected()
-    handlers = null;
   }
 
   function resolve(promise, result) {
@@ -68,22 +66,22 @@ function QPromise(fn) {
     var done = false;
     try {
       fn(function (value) {
-        if (done) return
-        done = true
-        resolve(promise, value)
+        if (done) return;
+        done = true;
+        resolve(promise, value);
       }, function (reason) {
-        if (done) return
-        done = true
-        reject(reason)
+        if (done) return;
+        done = true;
+        reject(reason);
       })
     } catch (ex) {
-      if (done) return
-      done = true
-      reject(ex)
+      if (done) return;
+      done = true;
+      reject(ex);
     }
   }
 
-  // 如果状态是 pending 就完成之后（fulfilled或者rejected状态）再处理
+  // 如果状态是 pending 就完成之后（fulfilled 或者 rejected 状态）再处理
   // 如果已经是 fulfilled or rejected 状态，直接调用
   function handle(handler) {
     // ensure we are always asynchronous
@@ -138,25 +136,25 @@ function QPromise(fn) {
 // export adapter for testing
 module.exports = {
   resolved: function (value) {
-      return new QPromise(function (resolve) {
-          resolve(value);
-      });
+    return new QPromise(function (resolve) {
+      resolve(value);
+    });
   },
   rejected: function (reason) {
-      return new QPromise(function (resolve, reject) {
-          reject(reason);
-      });
+    return new QPromise(function (resolve, reject) {
+      reject(reason);
+    });
   },
   deferred: function () {
-      var resolve, reject;
+    var resolve, reject;
 
-      return {
-          promise: new QPromise(function (rslv, rjct) {
-              resolve = rslv;
-              reject = rjct;
-          }),
-          resolve: resolve,
-          reject: reject
-      };
+    return {
+      promise: new QPromise(function (rslv, rjct) {
+        resolve = rslv;
+        reject = rjct;
+      }),
+      resolve: resolve,
+      reject: reject
+    };
   }
 };
